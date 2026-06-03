@@ -11,6 +11,8 @@ public class Utente
     public string Nome { get; set; }
     [EmailAddress]
     public string Email { get; set; }
+    [Required, MinLength(5), MaxLength(20)]
+    public string Password { get; set; }
     public Ruolo Ruolo { get; set; }
 
 }
