@@ -13,4 +13,5 @@ public interface ITicketService
 
     Task AddCommentToTicketAsync(int ticketId, AddCommentRequest commentDto);
     Task AssignTicketToUserAsync(int ticketId, int userId);
+    Task ReopenTicketAsync(int ticketId);
 }
