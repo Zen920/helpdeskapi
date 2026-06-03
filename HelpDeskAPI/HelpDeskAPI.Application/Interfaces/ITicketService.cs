@@ -1,19 +1,16 @@
-﻿using HelpDeskAPI.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using HelpDeskAPI.Core.DTOs;
+using HelpDeskAPI.Core.Models;
 
 namespace HelpDeskAPI.Application.Interfaces;
 
 public interface ITicketService
 {
-    Task<int> CreateTicketAsync(CreateTicketDto ticketDto);
+    Task<int> CreateTicketAsync(CreateTicketRequest ticketDto);
 
-    Task<TicketDto?> GetTicketByIdAsync(int ticketId);
-    Task<IEnumerable<TicketSummaryDto>> GetActiveTicketsAsync();
-    Task UpdateTicketStatusAsync(int ticketId, TicketStatus newStatus);
+    Task<TicketSummaryResponse?> GetTicketByIdAsync(int ticketId);
+    Task<IEnumerable<TicketSummaryResponse>> GetActiveTicketsAsync();
+    Task UpdateTicketStatusAsync(int ticketId, Stato newStatus);
 
-    Task AddCommentToTicketAsync(int ticketId, AddCommentDto commentDto);
+    Task AddCommentToTicketAsync(int ticketId, AddCommentRequest commentDto);
     Task AssignTicketToUserAsync(int ticketId, int userId);
-
 }
