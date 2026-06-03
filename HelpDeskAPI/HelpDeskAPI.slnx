@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="HelpDeskAPI.Application/HelpDeskAPI.Application.csproj" />
   <Project Path="HelpDeskAPI.Core/HelpDeskAPI.Core.csproj" />
+  <Project Path="HelpDeskAPI.Infrastructure/HelpDeskAPI.Infrastructure.csproj" />
 </Solution>
