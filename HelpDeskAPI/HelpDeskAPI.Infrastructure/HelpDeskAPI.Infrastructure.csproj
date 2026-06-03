@@ -11,4 +11,9 @@
     <Folder Include="Repositories\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\HelpDeskAPI.Application\HelpDeskAPI.Application.csproj" />
+    <ProjectReference Include="..\HelpDeskAPI.Core\HelpDeskAPI.Core.csproj" />
+  </ItemGroup>
+
 </Project>
