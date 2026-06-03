@@ -7,5 +7,5 @@ namespace HelpDeskAPI.Application.Interfaces;
 
 public interface IAuthService
 {
-    Task<Utente> Login(string );
+    Task<Utente> Login(string email, string password);
 }
