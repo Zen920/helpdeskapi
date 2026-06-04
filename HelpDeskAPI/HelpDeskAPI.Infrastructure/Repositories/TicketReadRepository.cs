@@ -11,7 +11,7 @@ namespace HelpDeskAPI.Infrastructure.Repositories;
 public class TicketReadRepository(HelpDeskAPIDbContext _context) : ITicketReadRepo
 {
     private readonly HelpDeskAPIDbContext _context = _context;
-    public async Task<ITicketReadRepo> GetActiveTickets()
+    public async Task<ICollection<TicketByStatusResponse>> GetActiveTickets()
     {
         return await _context.Tickets
                 .AsNoTracking()

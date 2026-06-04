@@ -3,5 +3,5 @@ namespace HelpDeskAPI.Application.Interfaces;
 
 public interface ITicketReadRepo
 {
-    Task<ITicketReadRepo> GetActiveTickets();
+    Task<ICollection<TicketByStatusResponse>> GetActiveTickets();
 }
