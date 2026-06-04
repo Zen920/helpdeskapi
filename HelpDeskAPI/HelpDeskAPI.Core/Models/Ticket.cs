@@ -16,6 +16,8 @@ public class Ticket
     [Required]
     public Stato Stato { get; set; } = Stato.APERTO;
     [Required]
+
+    public DateTime Date { get; set; } = DateTime.UtcNow;
     public Priorità Priorità { get; set; }
     public int StimaEffort { get; set; }
     public int UtenteId { get; set; }
