@@ -5,4 +5,4 @@ using System.Text;
 
 namespace HelpDeskAPI.Core.DTOs;
 
-public record ReopenTicketRequest(int TicketId, Stato NewStatus);
+public record UpdateTicketRequest(int TicketId, Stato NewStatus);

@@ -5,10 +5,13 @@ using HelpDeskAPI.Core.Models;
 
 namespace HelpDeskAPI.Application.Services;
 
-public class TicketService(ITicketRepository _ticketRepo, ICommentoRepository _commentoRepo,
+public class TicketService(ITicketRepository _ticketRepo,
+    ITicketReadRepo _ticketReadRepo,
+ICommentoRepository _commentoRepo,
     IAssegnazioneRepository _assegnazioneRepo, IUtenteRepository _utenteRepo, IDBContext _dBContext) : ITicketService
 {
     private readonly ITicketRepository _ticketRepo = _ticketRepo;
+    private readonly ITicketReadRepo _ticketReadRepo = _ticketReadRepo;
     private readonly ICommentoRepository _commentoRepo = _commentoRepo;
     private readonly IAssegnazioneRepository _assegnazioneRepo = _assegnazioneRepo;
     private readonly IUtenteRepository _utenteRepo = _utenteRepo;
@@ -25,9 +28,9 @@ public class TicketService(ITicketRepository _ticketRepo, ICommentoRepository _c
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task AssignTicketToUserAsync(int ticketId, int userId)
+    public async Task AssignTicketToUserAsync(AssignTicketToUserRequest request)
     {
-        var a = new Assegnazione {DataAssegnazione = DateTime.UtcNow, TicketId = ticketId, UtenteId = userId };
+        var a = new Assegnazione {DataAssegnazione = DateTime.UtcNow, TicketId = request.TicketId, UtenteId = request.UserId };
         _ = _assegnazioneRepo.Create(a);
         await _dbContext.SaveChangesAsync();
     }
@@ -38,9 +41,10 @@ public class TicketService(ITicketRepository _ticketRepo, ICommentoRepository _c
         return entity;
     }
 
-    public Task<IEnumerable<TicketSummaryResponse>> GetActiveTicketsAsync()
+    public async Task<ICollection<TicketByStatusResponse>> GetActiveTicketsAsync()
     {
-        throw new NotImplementedException();
+        var list = await _ticketReadRepo.GetActiveTickets();
+        return list;
     }
 
     public async Task<TicketSummaryResponse?> GetTicketByIdAsync(int ticketId)
@@ -52,13 +56,21 @@ public class TicketService(ITicketRepository _ticketRepo, ICommentoRepository _c
         return response;
     }
 
-    public Task ReopenTicketAsync(int ticketId)
+    public async Task ReopenTicketAsync(int ticketId)
     {
-        throw new NotImplementedException();
+        var t = await _ticketRepo.GetById(ticketId);
+        if (t is null) throw new Exception("Ticket not found");
+        if (t.Stato != Stato.CHIUSO) throw new Exception("Ticket is not closed");
+        t.Stato = Stato.IN_LAVORAZIONE;
+        await _ticketRepo.Update(t);
     }
 
-    public Task UpdateTicketStatusAsync(int ticketId, Stato newStatus)
+    public async Task UpdateTicketStatusAsync(UpdateTicketRequest request)
     {
-        throw new NotImplementedException();
+        var t = await _ticketRepo.GetById(request.TicketId);
+        if (t is null) throw new Exception("Ticket not found");
+        if (t.Stato != Stato.CHIUSO) throw new Exception("Ticket is not closed");
+        t.Stato = request.NewStatus;
+        await _ticketRepo.Update(t);
     }
 }
