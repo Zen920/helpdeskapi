@@ -19,6 +19,6 @@ public static class TicketExtensions
     public static Ticket ToEntity(this CreateTicketRequest request)
     {
         return new Ticket {Descrizione = request.Descrizione, Titolo = request.Titolo,
-            Priorità = request.Priority, StimaEffort = request.EffortRequired, Stato = Stato.APERTO};
+            Priorità = request.Priority, StimaEffort = request.EffortRequired, Stato = Stato.APERTO, UtenteId = request.UtenteId};
     }
 }

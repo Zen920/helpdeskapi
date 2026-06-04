@@ -21,7 +21,7 @@ ICommentoRepository _commentoRepo,
     {
         var ticket = await _ticketRepo.GetById(commentDto.TicketId) ?? throw new Exception("Ticket not found");
         if (ticket.Stato is Stato.CHIUSO) throw new Exception("Ticket is closed");
-        if (!(await _utenteRepo.EntityExists(commentDto.TicketId))) throw new Exception("User not found");
+        if (!(await _utenteRepo.EntityExists(commentDto.UserId))) throw new Exception("User not found");
 
         var comment = new Commento { Data = commentDto.date, Testo = commentDto.Text, TicketId = commentDto.TicketId, UtenteId = commentDto.UserId};
         _ = _commentoRepo.Create(comment);
@@ -37,14 +37,23 @@ ICommentoRepository _commentoRepo,
 
     public async Task<int> CreateTicketAsync(CreateTicketRequest ticketDto)
     {
-        var entity = await _ticketRepo.Create(ticketDto.ToEntity());
-        return entity;
+        var ticket = ticketDto.ToEntity();
+        var entity = await _ticketRepo.Create(ticket);
+        await _dbContext.SaveChangesAsync();
+
+        return ticket.Id;
     }
 
     public async Task<ICollection<TicketByStatusResponse>> GetActiveTicketsAsync()
     {
         var list = await _ticketReadRepo.GetActiveTickets();
         return list;
+    }
+
+    public async Task<ICollection<CommentoSummaryResponse>> GetCommentsOfTicket(int tickedId)
+    {
+       var comments = await _commentoRepo.GetCommentsOfTicket(tickedId);
+       return comments;
     }
 
     public async Task<TicketSummaryResponse?> GetTicketByIdAsync(int ticketId)
@@ -63,6 +72,8 @@ ICommentoRepository _commentoRepo,
         if (t.Stato != Stato.CHIUSO) throw new Exception("Ticket is not closed");
         t.Stato = Stato.IN_LAVORAZIONE;
         await _ticketRepo.Update(t);
+        await _dbContext.SaveChangesAsync();
+
     }
 
     public async Task UpdateTicketStatusAsync(UpdateTicketRequest request)
@@ -72,5 +83,7 @@ ICommentoRepository _commentoRepo,
         if (t.Stato != Stato.CHIUSO) throw new Exception("Ticket is not closed");
         t.Stato = request.NewStatus;
         await _ticketRepo.Update(t);
+        await _dbContext.SaveChangesAsync();
+
     }
 }
