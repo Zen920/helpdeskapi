@@ -1,4 +1,6 @@
 using Asp.Versioning;
+using HelpDeskAPI.Api.Auth;
+using HelpDeskAPI.Api.Services;
 using HelpDeskAPI.Application.Interfaces;
 using HelpDeskAPI.Application.Services;
 using HelpDeskAPI.Infrastructure.Database;
@@ -23,6 +25,12 @@ public static class WiringExtension
         builder.Services.AddScoped<IAssegnazioneRepository, AssegnazioneRepository>();
         builder.Services.AddScoped<ITicketReadRepo, TicketReadRepository>();
         builder.Services.AddScoped<ITicketService, TicketService>();
+        builder.Services.AddTransient<JwtConfiguration>();
+
+        builder.Services.AddJwtAuthentication(builder.Configuration);
+        builder.Services.AddTransient<TokenService>();
+        builder.Services.AddTransient<AppUser>();
+        builder.Services.AddHttpContextAccessor();
         builder.Services.AddApiVersioning(opt =>
         {
             opt.DefaultApiVersion = new ApiVersion(1, 0);

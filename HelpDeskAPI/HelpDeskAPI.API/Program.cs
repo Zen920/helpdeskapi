@@ -1,5 +1,6 @@
 using Asp.Versioning;
 using HelpDeskAPI.Api.Extensions;
+using HelpDeskAPI.Api.Services;
 using HelpDeskAPI.Application.Interfaces;
 using HelpDeskAPI.Core.DTOs;
 using HelpDeskAPI.Core.Models;
@@ -28,6 +29,20 @@ if (app.Environment.IsDevelopment())
 }
 
 debugGroup.MapGet("/health", () => Results.Ok()).WithDescription("Test if the API is up.");
+// --- Auth Endpoints ---
+app.MapPost("/login", (LoginRequest request, TokenService tokenService) =>
+{
+    var userIsAuthenticated = request.Email == "admin@email.com" && request.Password == "admin";
+
+    if (!userIsAuthenticated)
+    {
+        return Results.Unauthorized();
+    }
+    var userId = "1"; // Get user id from database
+    var token = tokenService.GenerateToken(userId, request.Email);
+
+    return Results.Ok(token);
+}).AllowAnonymous();
 
 // --- Ticket Endpoints ---
 
@@ -71,8 +86,7 @@ ticketsGroup.MapGet("/{ticketId:int}/comments", async (int ticketId, ITicketServ
     var comments = await service.GetCommentsOfTicket(ticketId);
     return Results.Ok(comments);
 }).WithDescription("Get all the comments for a given ticket id");
-
-ticketsGroup.MapPost("/{ticketId:int}/assign", async ([FromBody] AssignTicketToUserRequest request, int ticketId, ITicketService service) =>
+ticketsGroup.MapPost("/{ticketId:int}/assign", async ([FromBody] AssignTicketToUserRequest request, int ticketId,  ITicketService service) =>
 {
     if (request.TicketId < 1) throw new Exception("Id cannot be lower than 1.");
 
@@ -89,4 +103,7 @@ ticketsGroup.MapPost("/{ticketId:int}/reopen", async (int ticketId, ITicketServi
 
 app.UseHttpsRedirection();
 
+
+app.UseAuthentication();
+app.UseAuthorization();
 app.Run();
