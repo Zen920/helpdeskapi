@@ -15,4 +15,10 @@ public static class TicketExtensions
         return new TicketSummaryResponse(ticket.Titolo, ticket.Descrizione, DateTime.UtcNow, 
             ticket.Priorità, ticket.Stato, ticket.Utente.Email, commentSummary);
     }
+
+    public static Ticket ToEntity(this CreateTicketRequest request)
+    {
+        return new Ticket {Descrizione = request.Descrizione, Titolo = request.Titolo,
+            Priorità = request.Priority, StimaEffort = request.EffortRequired, Stato = Stato.APERTO};
+    }
 }

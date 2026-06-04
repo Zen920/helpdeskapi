@@ -35,15 +35,17 @@ public class TicketServiceTests
             Titolo: "Problema connessione",
             Descrizione: "La rete non funziona",
             Priority: Priorità.ALTA,
-            Date: DateTime.UtcNow
+            Date: DateTime.UtcNow,
+            EffortRequired: 2
         );
 
         Ticket capturedTicket = null;
-        _ticketRepository.When(r => r.Create(Arg.Any<Ticket>()))
-            .Do(callInfo =>
+        _ticketRepository.Create(Arg.Any<Ticket>())
+            .Returns(callInfo =>
             {
                 capturedTicket = callInfo.Arg<Ticket>();
                 capturedTicket.Id = 42;
+                return Task.FromResult(42);
             });
 
         var result = await _sut.CreateTicketAsync(request);
@@ -96,13 +98,14 @@ public class TicketServiceTests
     }
 
     [Fact]
-    public async Task GetTicketByIdAsync_NonExistingTicket_ReturnsNull()
+    public async Task GetTicketByIdAsync_NonExistingTicket_ThrowsException()
     {
         _ticketRepository.GetById(Arg.Any<int>()).Returns((Ticket?)null);
+        await Assert.ThrowsAsync<Exception> (async () =>
+        {
+            await _sut.GetTicketByIdAsync(999);
 
-        var result = await _sut.GetTicketByIdAsync(999);
-
-        Assert.Null(result);
+        });
     }
 
     [Fact]

@@ -28,14 +28,17 @@ public class TicketService(ITicketRepository _ticketRepo, ICommentoRepository _c
         await _dbContext.SaveChangesAsync();
     }
 
-    public Task AssignTicketToUserAsync(int ticketId, int userId)
+    public async Task AssignTicketToUserAsync(int ticketId, int userId)
     {
-        throw new NotImplementedException();
+        var a = new Assegnazione {DataAssegnazione = DateTime.UtcNow, TicketId = ticketId, UtenteId = userId };
+        _ = _assegnazioneRepo.Create(a);
+        await _dbContext.SaveChangesAsync();
     }
 
-    public Task<int> CreateTicketAsync(CreateTicketRequest ticketDto)
+    public async Task<int> CreateTicketAsync(CreateTicketRequest ticketDto)
     {
-        throw new NotImplementedException();
+        var entity = await _ticketRepo.Create(ticketDto.ToEntity());
+        return entity;
     }
 
     public Task<IEnumerable<TicketSummaryResponse>> GetActiveTicketsAsync()
