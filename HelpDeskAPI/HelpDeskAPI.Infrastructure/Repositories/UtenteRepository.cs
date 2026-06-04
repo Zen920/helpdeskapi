@@ -25,12 +25,12 @@ public class UtenteRepository(HelpDeskAPIDbContext _context) : IUtenteRepository
 
     public async Task<ICollection<Utente>> GetAll()
     {
-        return await _context.Utenti.ToListAsync();
+        return await _context.Utenti.AsNoTracking().ToListAsync();
     }
 
     public Task<Utente?> GetById(int id)
     {
-        return Task.FromResult(_context.Utenti.FirstOrDefault(u => u.Id == id));
+        return Task.FromResult(_context.Utenti.AsNoTracking().FirstOrDefault(u => u.Id == id));
     }
 
     public Task Update(Utente updatedEntity)
