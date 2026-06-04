@@ -11,7 +11,7 @@ public interface ITicketService
     Task<IEnumerable<TicketSummaryResponse>> GetActiveTicketsAsync();
     Task UpdateTicketStatusAsync(int ticketId, Stato newStatus);
 
-    Task AddCommentToTicketAsync(int ticketId, AddCommentRequest commentDto);
+    Task AddCommentToTicketAsync(AddCommentRequest commentDto);
     Task AssignTicketToUserAsync(int ticketId, int userId);
     Task ReopenTicketAsync(int ticketId);
 }

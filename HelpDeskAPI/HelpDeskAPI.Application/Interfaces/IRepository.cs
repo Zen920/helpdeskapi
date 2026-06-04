@@ -11,4 +11,5 @@ public interface IRepository<T, U>
     Task<ICollection<T>>GetAll();
     Task Update(T updatedEntity);
     Task Delete(T entity);
+    Task<bool> EntityExists(U id);
 }

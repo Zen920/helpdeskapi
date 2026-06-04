@@ -17,6 +17,10 @@ public class UtenteRepository(HelpDeskAPIDbContext _context) : IUtenteRepository
        return e.Entity.Id;
     }
 
+    public async Task<bool> EntityExists(int id)
+    {
+        return await _context.Utenti.AnyAsync(u => u.Id == id);
+    }
     public Task Delete(Utente entity)
     {
         return Task.FromResult(_context.Utenti.Remove(entity));

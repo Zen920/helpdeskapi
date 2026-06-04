@@ -23,6 +23,11 @@ public class CommentoRepository(HelpDeskAPIDbContext _context) : ICommentoReposi
         
     }
 
+    public async Task<bool> EntityExists(int id)
+    {
+        return await _context.Commenti.AnyAsync(c => c.Id == id);
+    }
+
     public async Task<ICollection<Commento>> GetAll()
     {
         return await _context.Commenti.AsNoTracking().ToListAsync();

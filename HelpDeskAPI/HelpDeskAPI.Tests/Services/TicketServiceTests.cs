@@ -12,6 +12,8 @@ public class TicketServiceTests
     private readonly ICommentoRepository _commentoRepository;
     private readonly IAssegnazioneRepository _assegnazioneRepository;
     private readonly IUtenteRepository _utenteRepository;
+    private readonly IDBContext _dbContext;
+
     private readonly ITicketService _sut;
 
     public TicketServiceTests()
@@ -20,7 +22,9 @@ public class TicketServiceTests
         _commentoRepository = Substitute.For<ICommentoRepository>();
         _assegnazioneRepository = Substitute.For<IAssegnazioneRepository>();
         _utenteRepository = Substitute.For<IUtenteRepository>();
-        _sut = new TicketService(_ticketRepository, _commentoRepository, _assegnazioneRepository, _utenteRepository);
+        _dbContext = Substitute.For<IDBContext>();
+
+        _sut = new TicketService(_ticketRepository, _commentoRepository, _assegnazioneRepository, _utenteRepository, _dbContext);
     }
 
     [Fact]
@@ -59,7 +63,8 @@ public class TicketServiceTests
             Descrizione = "Rete instabile al piano terra",
             Stato = Stato.IN_LAVORAZIONE,
             Priorità = Priorità.ALTA,
-            UtenteId = utente.Id
+            UtenteId = utente.Id,
+            Utente = utente
         };
         var commenti = new List<Commento>
         {
@@ -101,16 +106,16 @@ public class TicketServiceTests
     }
 
     [Fact]
-    public void GetActiveTicketsAsync_WithActiveTickets_ReturnsOnlyActiveOnes() { }
+    public void GetActiveTicketsAsync_WithActiveTickets_ReturnsOnlyActiveOnes() { Assert.Equal(0,1); }
 
     [Fact]
-    public void GetActiveTicketsAsync_NoActiveTickets_ReturnsEmptyCollection() { }
+    public void GetActiveTicketsAsync_NoActiveTickets_ReturnsEmptyCollection() { Assert.Equal(0, 1); }
 
     [Fact]
-    public void UpdateTicketStatusAsync_ValidTransition_UpdatesSuccessfully() { }
+    public void UpdateTicketStatusAsync_ValidTransition_UpdatesSuccessfully() { Assert.Equal(0, 1); }
 
     [Fact]
-    public void UpdateTicketStatusAsync_InvalidTransition_ThrowsInvalidOperationException() { }
+    public void UpdateTicketStatusAsync_InvalidTransition_ThrowsInvalidOperationException() { Assert.Equal(0, 1); }
 
     [Fact]
     public async Task UpdateTicketStatusAsync_NonExistingTicket_ThrowsKeyNotFoundException() {
@@ -125,7 +130,7 @@ public class TicketServiceTests
     [Fact]
     public void AddCommentToTicketAsync_ValidRequest_AddsComment() {
         var commento = new AddCommentRequest("testo commento", DateTime.UtcNow, 1, 1);
-        _sut.AddCommentToTicketAsync(commento.TicketId, commento);
+        _sut.AddCommentToTicketAsync(commento);
     }
 
     [Fact]
@@ -134,7 +139,7 @@ public class TicketServiceTests
         _ = _ticketRepository.GetById(commento.TicketId).Returns((Ticket?)null);
         await Assert.ThrowsAsync<Exception>(async () =>
         {
-            await _sut.AddCommentToTicketAsync(commento.TicketId, commento);
+            await _sut.AddCommentToTicketAsync( commento);
         });
     }
 
@@ -145,28 +150,28 @@ public class TicketServiceTests
         _ticketRepository.GetById(commento.TicketId).Returns(ticket);
         await Assert.ThrowsAsync<Exception>(async () =>
         {
-            await _sut.AddCommentToTicketAsync(commento.TicketId, commento);
+            await _sut.AddCommentToTicketAsync(commento);
         });
     }
 
     [Fact]
-    public void AssignTicketToUserAsync_ValidRequest_CreatesAssegnazione() { }
+    public void AssignTicketToUserAsync_ValidRequest_CreatesAssegnazione() { Assert.Equal(0, 1); }
 
     [Fact]
-    public void AssignTicketToUserAsync_NonExistingTicket_ThrowsKeyNotFoundException() { }
+    public void AssignTicketToUserAsync_NonExistingTicket_ThrowsKeyNotFoundException() { Assert.Equal(0, 1); }
 
     [Fact]
-    public void AssignTicketToUserAsync_NonExistingUser_ThrowsKeyNotFoundException() { }
+    public void AssignTicketToUserAsync_NonExistingUser_ThrowsKeyNotFoundException() { Assert.Equal(0, 1); }
 
     [Fact]
-    public void AssignTicketToUserAsync_TicketAlreadyAssigned_ThrowsInvalidOperationException() { }
+    public void AssignTicketToUserAsync_TicketAlreadyAssigned_ThrowsInvalidOperationException() { Assert.Equal(0, 1); }
 
     [Fact]
-    public void ReopenTicketAsync_ClosedTicket_SetsStatusToAperto() { }
+    public void ReopenTicketAsync_ClosedTicket_SetsStatusToAperto() { Assert.Equal(0, 1); }
 
     [Fact]
-    public void ReopenTicketAsync_NonExistingTicket_ThrowsKeyNotFoundException() { }
+    public void ReopenTicketAsync_NonExistingTicket_ThrowsKeyNotFoundException() { Assert.Equal(0, 1); }
 
     [Fact]
-    public void ReopenTicketAsync_TicketAlreadyOpen_ThrowsInvalidOperationException() { }
+    public void ReopenTicketAsync_TicketAlreadyOpen_ThrowsInvalidOperationException() { Assert.Equal(0, 1); }
 }
