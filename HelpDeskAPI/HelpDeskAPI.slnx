@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="HelpDeskAPI.API/HelpDeskAPI.API.csproj" />
+  <Project Path="HelpDeskAPI.Application/HelpDeskAPI.Application.csproj" />
+  <Project Path="HelpDeskAPI.Core/HelpDeskAPI.Core.csproj" />
+  <Project Path="HelpDeskAPI.gRPC/HelpDeskAPI.gRPC.csproj" Id="501313d0-eff0-41da-94e1-d025b4c14814" />
+  <Project Path="HelpDeskAPI.Infrastructure/HelpDeskAPI.Infrastructure.csproj" />
+  <Project Path="HelpDeskAPI.Tests/HelpDeskAPI.Tests.csproj" Id="f8442382-53bd-480d-8aa3-4cdfd3231f20" />
+</Solution>
