@@ -25,8 +25,9 @@ public static class WiringExtension
         builder.Services.AddScoped<IAssegnazioneRepository, AssegnazioneRepository>();
         builder.Services.AddScoped<ITicketReadRepo, TicketReadRepository>();
         builder.Services.AddScoped<ITicketService, TicketService>();
-        builder.Services.AddTransient<JwtConfiguration>();
+        builder.Services.AddScoped<IAuthService, AuthService>();
 
+        builder.Services.AddTransient<JwtConfiguration>();
         builder.Services.AddJwtAuthentication(builder.Configuration);
         builder.Services.AddTransient<TokenService>();
         builder.Services.AddTransient<AppUser>();

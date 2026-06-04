@@ -1,4 +1,6 @@
 ﻿using HelpDeskAPI.Api.Auth;
+using HelpDeskAPI.Core.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -15,13 +17,13 @@ public class TokenService
         _config = config;
     }
 
-    public string GenerateToken(string id, string email)
+    public string GenerateToken(string id, string email, Ruolo role)
     {
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, id),
             new Claim(JwtRegisteredClaimNames.Email, email),
-            // Add more claims if needed
+            new Claim("Role", role.ToString()),
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.Secret));
