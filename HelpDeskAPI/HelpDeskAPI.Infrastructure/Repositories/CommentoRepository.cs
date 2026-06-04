@@ -1,4 +1,5 @@
 ﻿using HelpDeskAPI.Application.Interfaces;
+using HelpDeskAPI.Core.DTOs;
 using HelpDeskAPI.Core.Models;
 using HelpDeskAPI.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
@@ -36,6 +37,12 @@ public class CommentoRepository(HelpDeskAPIDbContext _context) : ICommentoReposi
     public Task<Commento?> GetById(int id)
     {
         return Task.FromResult(_context.Commenti.AsNoTracking().FirstOrDefault(c => c.Id == id));
+    }
+
+    public async Task<ICollection<CommentoSummaryResponse>> GetCommentsOfTicket(int tickedId)
+    {
+        return await _context.Commenti.Where(c => c.TicketId == tickedId)
+            .Select(c => new CommentoSummaryResponse (c.Autore.Nome, c.Testo, c.Data)).ToListAsync();
     }
 
     public Task Update(Commento updatedEntity)

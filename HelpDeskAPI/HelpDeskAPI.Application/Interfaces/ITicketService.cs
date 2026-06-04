@@ -14,4 +14,5 @@ public interface ITicketService
     Task AddCommentToTicketAsync(AddCommentRequest commentDto);
     Task AssignTicketToUserAsync(AssignTicketToUserRequest request);
     Task ReopenTicketAsync(int ticketId);
+    Task<ICollection<CommentoSummaryResponse>> GetCommentsOfTicket(int tickedId);
 }
