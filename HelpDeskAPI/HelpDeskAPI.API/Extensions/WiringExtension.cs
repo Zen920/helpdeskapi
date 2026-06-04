@@ -39,5 +39,17 @@ public static class WiringExtension
      opt.GroupNameFormat = "'v'VVV";
      opt.SubstituteApiVersionInUrl = true;
  });
+
+        builder.Services.AddSwaggerGen(options =>
+        {
+            options.SwaggerDoc("v1", new Microsoft.OpenApi.OpenApiInfo
+            {
+                Title = "HelpDesk API",
+                Version = "1",
+                Description = "HelpDesk Management API"
+            });
+
+            options.DocumentFilter<ReplaceVersionInPathDocumentFilter>();
+        });
     }
 }

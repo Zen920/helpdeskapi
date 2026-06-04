@@ -80,7 +80,7 @@ ICommentoRepository _commentoRepo,
     {
         var t = await _ticketRepo.GetById(request.TicketId);
         if (t is null) throw new Exception("Ticket not found");
-        if (t.Stato != Stato.CHIUSO) throw new Exception("Ticket is not closed");
+        if (t.Stato == Stato.CHIUSO) throw new Exception("Ticket is closed");
         t.Stato = request.NewStatus;
         await _ticketRepo.Update(t);
         await _dbContext.SaveChangesAsync();
