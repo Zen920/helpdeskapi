@@ -8,10 +8,10 @@ public interface ITicketService
     Task<int> CreateTicketAsync(CreateTicketRequest ticketDto);
 
     Task<TicketSummaryResponse?> GetTicketByIdAsync(int ticketId);
-    Task<IEnumerable<TicketSummaryResponse>> GetActiveTicketsAsync();
-    Task UpdateTicketStatusAsync(int ticketId, Stato newStatus);
+    Task<ICollection<TicketByStatusResponse>> GetActiveTicketsAsync();
+    Task UpdateTicketStatusAsync(UpdateTicketRequest request);
 
-    Task AddCommentToTicketAsync(int ticketId, AddCommentRequest commentDto);
-    Task AssignTicketToUserAsync(int ticketId, int userId);
+    Task AddCommentToTicketAsync(AddCommentRequest commentDto);
+    Task AssignTicketToUserAsync(AssignTicketToUserRequest request);
     Task ReopenTicketAsync(int ticketId);
 }

@@ -16,7 +16,10 @@ public class TicketRepository(HelpDeskAPIDbContext _context) : ITicketRepository
        var e = await _context.Tickets.AddAsync(entity);
        return e.Entity.Id;
     }
-
+    public async Task<bool> EntityExists(int id)
+    {
+        return await _context.Tickets.AnyAsync(t => t.Id == id);
+    }
     public Task Delete(Ticket entity)
     {
         return Task.FromResult(_context.Tickets.Remove(entity));

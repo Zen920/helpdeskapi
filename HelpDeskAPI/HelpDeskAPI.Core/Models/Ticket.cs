@@ -22,6 +22,8 @@ public class Ticket
     public int StimaEffort { get; set; }
     public int UtenteId { get; set; }
     public Utente Utente { get; set; }
+    public ICollection<Commento> Commenti { get; set; } = [];
+
 }
 
 // Rimbalzo ticket -> riapertura

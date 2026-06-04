@@ -23,6 +23,11 @@ public class AssegnazioneRepository(HelpDeskAPIDbContext _context) : IAssegnazio
         
     }
 
+    public async Task<bool> EntityExists(int id)
+    {
+        return await _context.Assegnazioni.AnyAsync(a => a.Id == id);
+    }
+
     public async Task<ICollection<Assegnazione>> GetAll()
     {
         return await _context.Assegnazioni.AsNoTracking().ToListAsync();

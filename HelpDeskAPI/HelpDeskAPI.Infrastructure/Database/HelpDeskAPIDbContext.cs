@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using HelpDeskAPI.Core.Models;
+using HelpDeskAPI.Application.Interfaces;
 
 namespace HelpDeskAPI.Infrastructure.Database;
 
-public class HelpDeskAPIDbContext : DbContext
+public class HelpDeskAPIDbContext : DbContext, IDBContext
 {
     public DbSet<Utente> Utenti { get; set; }
     public DbSet<Ticket> Tickets { get; set; }
