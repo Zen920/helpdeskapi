@@ -10,6 +10,6 @@ public class AuthService(IUtenteRepository _userRepo) : IAuthService
         var user = await _userRepo.GetUtenteByEmail(loginRequest.Email);
         if (user is null) throw new Exception("No account associated with this email.");
         if (user.Password != loginRequest.Password) throw new Exception("Password is invalid.");
-        return user;
+        return new LoginResponse(loginRequest.Email, user.Id, user.Role);
     }
 }

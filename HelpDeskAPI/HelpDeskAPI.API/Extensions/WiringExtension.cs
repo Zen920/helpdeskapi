@@ -1,10 +1,12 @@
 using Asp.Versioning;
 using HelpDeskAPI.Api.Auth;
 using HelpDeskAPI.Api.Services;
+using HelpDeskAPI.API.Auth.Policies;
 using HelpDeskAPI.Application.Interfaces;
 using HelpDeskAPI.Application.Services;
 using HelpDeskAPI.Infrastructure.Database;
 using HelpDeskAPI.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 namespace HelpDeskAPI.Api.Extensions;
 public static class WiringExtension
@@ -32,6 +34,13 @@ public static class WiringExtension
         builder.Services.AddTransient<TokenService>();
         builder.Services.AddTransient<AppUser>();
         builder.Services.AddHttpContextAccessor();
+        builder.Services.AddScoped<IAuthorizationHandler, AccessToTicketCommentsHandler>();
+
+        builder.Services.AddAuthorization(options =>
+        {
+            options.AddPolicy("ResourceAccess", policy =>
+                policy.AddRequirements(new AccessToTicketCommentsRequirement()));
+        });
         builder.Services.AddApiVersioning(opt =>
         {
             opt.DefaultApiVersion = new ApiVersion(1, 0);

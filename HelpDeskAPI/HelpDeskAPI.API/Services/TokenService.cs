@@ -23,7 +23,7 @@ public class TokenService
         {
             new Claim(JwtRegisteredClaimNames.Sub, id),
             new Claim(JwtRegisteredClaimNames.Email, email),
-            new Claim("Role", role.ToString()),
+            new Claim("role", role.ToString()),
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.Secret));

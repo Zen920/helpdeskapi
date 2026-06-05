@@ -6,4 +6,6 @@ public class AppUser : ClaimsPrincipal
 
     public string Id => FindFirst(ClaimTypes.NameIdentifier).Value;
     public string Email => FindFirst(ClaimTypes.Email).Value;
+    public string Role => FindFirst(ClaimTypes.Role).Value;
+
 }

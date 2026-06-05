@@ -8,5 +8,5 @@ namespace HelpDeskAPI.Application.Interfaces;
 
 public interface IUtenteRepository : IRepository<Utente, int>
 {
-    Task<LoginResponse> GetUtenteByEmail(string email);
+    Task<LoginInfo> GetUtenteByEmail(string email);
 }

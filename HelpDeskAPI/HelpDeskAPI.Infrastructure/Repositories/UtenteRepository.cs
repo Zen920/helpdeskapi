@@ -43,8 +43,8 @@ public class UtenteRepository(HelpDeskAPIDbContext _context) : IUtenteRepository
         return Task.FromResult(_context.Utenti.Update(updatedEntity));
     }
 
-    public Task<LoginResponse> GetUtenteByEmail(string email)
+    public Task<LoginInfo> GetUtenteByEmail(string email)
     {
-        return Task.FromResult(_context.Utenti.Where(u => u.Email == email).Select(u => new LoginResponse(u.Email, u.Password, u.Ruolo)).FirstOrDefault());
+        return Task.FromResult(_context.Utenti.Where(u => u.Email == email).Select(u => new LoginInfo(u.Password, u.Ruolo, u.Id)).FirstOrDefault());
     }
 }

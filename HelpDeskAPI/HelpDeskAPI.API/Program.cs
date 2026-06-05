@@ -19,6 +19,8 @@ var versionSet = app.NewApiVersionSet()
 
 var debugGroup = app.MapGroup("api/v{version:apiVersion}/debug")
     .WithApiVersionSet(versionSet);
+var authGroup = app.MapGroup("api/v{version:apiVersion}/auth")
+    .WithApiVersionSet(versionSet);
 
 var ticketsGroup = app.MapGroup("api/v{version:apiVersion}/tickets")
     .WithApiVersionSet(versionSet);
@@ -31,16 +33,10 @@ if (app.Environment.IsDevelopment())
 
 debugGroup.MapGet("/health", () => Results.Ok()).WithDescription("Test if the API is up.");
 // --- Auth Endpoints ---
-app.MapPost("/login", async (LoginRequest request, TokenService tokenService, IAuthService service) =>
+authGroup.MapPost("/login", async (LoginRequest request, TokenService tokenService, IAuthService service) =>
 {
-    var userIsAuthenticated = request.Email == "admin@email.com" && request.Password == "admin";
-
-    if (!userIsAuthenticated)
-    {
-        return Results.Unauthorized();
-    }
     var user = await service.Login(request);
-    var token = tokenService.GenerateToken(user.Email, user.Email, user.Role);
+    var token = tokenService.GenerateToken(user.Id.ToString(), user.Email, user.Role);
 
     return Results.Ok(token);
 }).AllowAnonymous();
@@ -83,12 +79,13 @@ ticketsGroup.MapPost("/{ticketId:int}/comments", async ([FromBody] AddCommentReq
 
 ticketsGroup.MapGet("/{ticketId:int}/comments", async (int ticketId, ITicketService service, AppUser appUser) =>
 {
-    Console.WriteLine(appUser);
+    if (!appUser.IsInRole(Ruolo.ADMIN.ToString()))
+        if((!appUser.IsInRole(Ruolo.OPERATOR.ToString()) || await service.IsUserAssignedToTicket(Int32.Parse(appUser.Id), ticketId))) return Results.Unauthorized();
     if (ticketId < 1) throw new Exception("Id cannot be lower than 1.");
     var comments = await service.GetCommentsOfTicket(ticketId);
     return Results.Ok(comments);
 }).WithDescription("Get all the comments for a given ticket id")
-.RequireAuthorization();
+.RequireAuthorization("ResourceAccess");
 ticketsGroup.MapPost("/{ticketId:int}/assign", async ([FromBody] AssignTicketToUserRequest request, int ticketId,  ITicketService service) =>
 {
     if (request.TicketId < 1) throw new Exception("Id cannot be lower than 1.");

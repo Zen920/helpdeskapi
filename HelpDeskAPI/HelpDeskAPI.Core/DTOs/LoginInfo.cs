@@ -5,4 +5,4 @@ using System.Text;
 
 namespace HelpDeskAPI.Core.DTOs;
 
-public record LoginResponse(string Email, int Id, Ruolo Role);
+public record LoginInfo(string Password, Ruolo Role, int Id);
