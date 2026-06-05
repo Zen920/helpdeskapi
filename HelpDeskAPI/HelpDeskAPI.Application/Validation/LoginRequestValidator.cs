@@ -8,9 +8,9 @@ using System.Text.RegularExpressions;
 
 namespace HelpDeskAPI.Application.Validation;
 
-internal partial class LoginRequestValidation : AbstractValidator<LoginRequest>
+public partial class LoginRequestValidator : AbstractValidator<LoginRequest>
 {
-    public LoginRequestValidation()
+    public LoginRequestValidator()
     {
         RuleFor(r => r.Email)
             .NotEmpty()
@@ -18,9 +18,9 @@ internal partial class LoginRequestValidation : AbstractValidator<LoginRequest>
         RuleFor(r => r.Password)
             .NotEmpty()
             .Length(3,20)
-            .Custom((p, context) =>
+            .Custom((p, context) => 
             {
-                PasswordRegex().IsMatch(p);
+                if(!PasswordRegex().IsMatch(p)) context.AddFailure("Password does not match security standards.");
             });
     }
 

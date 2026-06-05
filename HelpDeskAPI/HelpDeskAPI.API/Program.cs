@@ -3,6 +3,7 @@ using HelpDeskAPI.Api.Auth;
 using HelpDeskAPI.Api.Extensions;
 using HelpDeskAPI.Api.Services;
 using HelpDeskAPI.Application.Interfaces;
+using HelpDeskAPI.Application.Validation;
 using HelpDeskAPI.Core.DTOs;
 using HelpDeskAPI.Core.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -35,6 +36,8 @@ debugGroup.MapGet("/health", () => Results.Ok()).WithDescription("Test if the AP
 // --- Auth Endpoints ---
 authGroup.MapPost("/login", async (LoginRequest request, TokenService tokenService, IAuthService service) =>
 {
+    var validator = new LoginRequestValidator();
+    var validationResult = validator.Validate(request);
     var user = await service.Login(request);
     var token = tokenService.GenerateToken(user.Id.ToString(), user.Email, user.Role);
 
