@@ -1,5 +1,7 @@
 using Asp.Versioning;
+using HelpDeskAPI.Api.Auth;
 using HelpDeskAPI.Api.Extensions;
+using HelpDeskAPI.Api.Services;
 using HelpDeskAPI.Application.Interfaces;
 using HelpDeskAPI.Core.DTOs;
 using HelpDeskAPI.Core.Models;
@@ -17,6 +19,8 @@ var versionSet = app.NewApiVersionSet()
 
 var debugGroup = app.MapGroup("api/v{version:apiVersion}/debug")
     .WithApiVersionSet(versionSet);
+var authGroup = app.MapGroup("api/v{version:apiVersion}/auth")
+    .WithApiVersionSet(versionSet);
 
 var ticketsGroup = app.MapGroup("api/v{version:apiVersion}/tickets")
     .WithApiVersionSet(versionSet);
@@ -28,6 +32,14 @@ if (app.Environment.IsDevelopment())
 }
 
 debugGroup.MapGet("/health", () => Results.Ok()).WithDescription("Test if the API is up.");
+// --- Auth Endpoints ---
+authGroup.MapPost("/login", async (LoginRequest request, TokenService tokenService, IAuthService service) =>
+{
+    var user = await service.Login(request);
+    var token = tokenService.GenerateToken(user.Id.ToString(), user.Email, user.Role);
+
+    return Results.Ok(token);
+}).AllowAnonymous();
 
 // --- Ticket Endpoints ---
 
@@ -65,14 +77,16 @@ ticketsGroup.MapPost("/{ticketId:int}/comments", async ([FromBody] AddCommentReq
     return Results.Created();
 }).WithDescription("Create a new comment for a specific ticket id");
 
-ticketsGroup.MapGet("/{ticketId:int}/comments", async (int ticketId, ITicketService service) =>
+ticketsGroup.MapGet("/{ticketId:int}/comments", async (int ticketId, ITicketService service, AppUser appUser) =>
 {
+    if (!appUser.IsInRole(Ruolo.ADMIN.ToString()))
+        if((!appUser.IsInRole(Ruolo.OPERATOR.ToString()) || await service.IsUserAssignedToTicket(Int32.Parse(appUser.Id), ticketId))) return Results.Unauthorized();
     if (ticketId < 1) throw new Exception("Id cannot be lower than 1.");
     var comments = await service.GetCommentsOfTicket(ticketId);
     return Results.Ok(comments);
-}).WithDescription("Get all the comments for a given ticket id");
-
-ticketsGroup.MapPost("/{ticketId:int}/assign", async ([FromBody] AssignTicketToUserRequest request, int ticketId, ITicketService service) =>
+}).WithDescription("Get all the comments for a given ticket id")
+.RequireAuthorization("ResourceAccess");
+ticketsGroup.MapPost("/{ticketId:int}/assign", async ([FromBody] AssignTicketToUserRequest request, int ticketId,  ITicketService service) =>
 {
     if (request.TicketId < 1) throw new Exception("Id cannot be lower than 1.");
 
@@ -89,4 +103,7 @@ ticketsGroup.MapPost("/{ticketId:int}/reopen", async (int ticketId, ITicketServi
 
 app.UseHttpsRedirection();
 
+
+app.UseAuthentication();
+app.UseAuthorization();
 app.Run();

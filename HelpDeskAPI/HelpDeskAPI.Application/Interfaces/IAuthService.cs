@@ -8,5 +8,5 @@ namespace HelpDeskAPI.Application.Interfaces;
 
 public interface IAuthService
 {
-    Task<LoginBasicResponse> Login(LoginRequest loginRequest);
+    Task<LoginResponse> Login(LoginRequest loginRequest);
 }

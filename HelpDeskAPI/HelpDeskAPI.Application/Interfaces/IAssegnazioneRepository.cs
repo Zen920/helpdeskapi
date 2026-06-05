@@ -7,4 +7,5 @@ namespace HelpDeskAPI.Application.Interfaces;
 
 public interface IAssegnazioneRepository : IRepository<Assegnazione, int>
 {
+    Task<bool> IsUserAssignedToTicket(int userId, int ticketId);
 }
