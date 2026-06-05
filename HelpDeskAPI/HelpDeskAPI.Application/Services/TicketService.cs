@@ -84,6 +84,13 @@ ICommentoRepository _commentoRepo,
         t.Stato = request.NewStatus;
         await _ticketRepo.Update(t);
         await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task<bool> IsUserAssignedToTicket(int userId, int ticketId)
+    {
+        if (await _ticketRepo.GetById(ticketId) is null) throw new Exception("Ticket not found");
+        if (await _utenteRepo.GetById(userId) is null) throw new Exception("Ticket not found");
+        return await _assegnazioneRepo.IsUserAssignedToTicket(userId, ticketId);
 
     }
 }

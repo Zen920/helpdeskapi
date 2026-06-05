@@ -1,4 +1,5 @@
 ﻿using HelpDeskAPI.Application.Interfaces;
+using HelpDeskAPI.Core.DTOs;
 using HelpDeskAPI.Core.Models;
 using HelpDeskAPI.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
@@ -40,5 +41,10 @@ public class UtenteRepository(HelpDeskAPIDbContext _context) : IUtenteRepository
     public Task Update(Utente updatedEntity)
     {
         return Task.FromResult(_context.Utenti.Update(updatedEntity));
+    }
+
+    public Task<LoginInfo> GetUtenteByEmail(string email)
+    {
+        return Task.FromResult(_context.Utenti.Where(u => u.Email == email).Select(u => new LoginInfo(u.Password, u.Ruolo, u.Id)).FirstOrDefault());
     }
 }

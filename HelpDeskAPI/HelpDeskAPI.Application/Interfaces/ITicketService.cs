@@ -15,4 +15,6 @@ public interface ITicketService
     Task AssignTicketToUserAsync(AssignTicketToUserRequest request);
     Task ReopenTicketAsync(int ticketId);
     Task<ICollection<CommentoSummaryResponse>> GetCommentsOfTicket(int tickedId);
+    Task<bool> IsUserAssignedToTicket(int userId, int ticketId);
+
 }

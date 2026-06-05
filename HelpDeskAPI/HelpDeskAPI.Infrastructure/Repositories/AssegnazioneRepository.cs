@@ -38,6 +38,11 @@ public class AssegnazioneRepository(HelpDeskAPIDbContext _context) : IAssegnazio
         return Task.FromResult(_context.Assegnazioni.AsNoTracking().FirstOrDefault(a => a.Id == id));
     }
 
+    public async Task<bool> IsUserAssignedToTicket(int userId, int ticketId)
+    {
+        return await _context.Assegnazioni.AnyAsync(a => a.TicketId == ticketId && a.UtenteId == userId);
+    }
+
     public Task Update(Assegnazione updatedEntity)
     {
         return Task.FromResult(_context.Assegnazioni.Update(updatedEntity));
